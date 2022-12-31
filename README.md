@@ -16,4 +16,7 @@ Both variants share some steps/scripts.
 ### Smell detection using DL (Autoencoder)
 - `repo_download.ipynb`
 - `analyze_code.ipynb`
-- `create_dataset.ipynb`
+- `analyze_code_codesplit.ipynb`
+- `create_dataset_DL.ipynb`
+- `tokenize.ipynb`
+- `train_autoencoder.ipynb`

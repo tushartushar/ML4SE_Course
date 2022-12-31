@@ -1,3 +1,5 @@
+import tensorflow
+from keras.backend import get_value
 from tensorflow.python.keras import regularizers
 import numpy as np
 import pandas as pd
@@ -42,7 +44,7 @@ def find_optimal(error_df):
             max_pr = precision
             max_re = recall
     print(f"Result optimal_threshold={optimal_threshold}, max_precision={max_pr}, max_recall={max_re}, max_f1={max_f1}")
-    return optimal_threshold, max_pr, max_re, max_f1
+    return optimal_threshold, max_pr.numpy(), max_re.numpy(), max_f1.numpy()
 
 
 def autoencoder_dense(data, layers=1, encoding_dimension=32, epochs=10, with_bottleneck=True):
@@ -95,7 +97,8 @@ def autoencoder_dense(data, layers=1, encoding_dimension=32, epochs=10, with_bot
     error_df = pd.DataFrame({'Reconstruction_error': mse,
                              'True_class': data.eval_labels})
 
-    return find_optimal(error_df)
+    optimal_threshold, max_pr, max_re, max_f1 = find_optimal(error_df)
+    return optimal_threshold, max_pr, max_re, max_f1
 
 
 def train_autoencoder(max_encoding_dim, input_data, out_folder, smell, layers, epochs):
@@ -118,8 +121,8 @@ def train_autoencoder(max_encoding_dim, input_data, out_folder, smell, layers, e
                     max_pr = -1
                     max_re = -1
                     max_f1 = -1
-                write_result(outfile,
-                             str(encoding) + "," + str(optimal_threshold) + "," + str(
-                                 epochs) + "," + str(bottleneck) + "," + str(layer) + "," +
-                             str(max_pr) + "," + str(max_re) + "," + str(max_f1) + "\n")
+                write_result(outfile, f"{encoding},{optimal_threshold},{epochs},{bottleneck},{layer},{max_pr},{max_re},{max_f1}\n")
+                             # str(encoding) + "," + str(optimal_threshold) + "," + str(
+                             #     epochs) + "," + str(bottleneck) + "," + str(layer) + "," +
+                             # str(max_pr.numpy()) + "," + str(max_re.numpy()) + "," + str(max_f1.numpy()) + "\n")
 
